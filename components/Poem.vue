@@ -1,5 +1,17 @@
 <template>
   <div class="">
+    <div class="poem">
+      <h1>
+        {{ poemTitle }}
+      </h1>
+      <span v-for="(row, index) in poemVerses" :key="`${row.verse}-${index}`">
+        <a
+          @click="verseClick(index)"
+          :class="selectedVerse === index ? 'selected' : ''"
+          >{{ row.verse }}</a
+        >
+      </span>
+    </div>
     <div class="menu">
       <select
         ref="langPicker"
@@ -10,19 +22,11 @@
         <option
           :key="`${poem.langs}-option`"
           v-for="poem in poemsData"
-          :value="poem"
+          :value="poem.langs"
         >
           {{ poem.langs }}
         </option>
       </select>
-    </div>
-    <div class="poem">
-      <h1>
-        {{ poemTitle }}
-      </h1>
-      <span v-for="(row, index) in poemVerses" :key="`${row.verse}-${index}`">
-        <a @click="verseClick(index)">{{ row.verse }}</a>
-      </span>
     </div>
   </div>
 </template>
@@ -41,31 +45,56 @@ export default {
   data() {
     return {
       selectedLang: null,
-      selectedVerse: -1
+      selectedVerse: -1,
+      animated: true
     }
   },
   computed: {
+    selectedLangData() {
+      if (this.poemsData) {
+        return this.poemsData.find((e) => e.langs === this.selectedLang)
+      }
+      return null
+    },
     poemVerses() {
-      if (this.selectedLang) {
-        return this.selectedLang.verses
+      if (this.selectedLangData) {
+        return this.selectedLangData.verses
       }
       return null
     },
     poemTitle() {
-      if (this.selectedLang) {
-        return this.selectedLang.title
+      if (this.selectedLangData) {
+        return this.selectedLangData.title
       }
       return null
     }
   },
   mounted() {
-    this.selectedLang = this.poemsData.find((e) => e.langs === 'Portuguese')
+    this.selectedLang = 'Portuguese'
     this.updateSelection()
+    this.animate(true)
   },
   methods: {
+    animate(enable) {
+      if (enable && !this.t) {
+        this.t = setInterval(() => {
+          this.updateVerse()
+        }, 4000)
+      } else {
+        clearInterval(this.t)
+      }
+    },
+    updateVerse() {
+      this.selectedVerse = (this.selectedVerse + 1) % this.poemVerses.length
+      this.updateSelection()
+    },
     verseClick(index) {
       this.selectedVerse = index
       this.updateSelection()
+      if (this.animated) {
+        this.animated = false
+        this.animate(false)
+      }
     },
     updateSelection() {
       this.$emit('input', {
@@ -78,8 +107,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 .menu {
-  display: flex;
-  justify-content: center;
+  position: fixed;
+  left: 1rem;
+  bottom: 1rem;
 }
 .poem {
   display: flex;
@@ -88,11 +118,15 @@ export default {
   align-items: center;
   h1 {
     text-transform: capitalize;
+    margin-bottom: 1rem;
   }
   a:hover {
     background-color: lightgray;
     opacity: 0.5;
     cursor: pointer;
+  }
+  a.selected {
+    background-color: lightgray;
   }
 }
 </style>

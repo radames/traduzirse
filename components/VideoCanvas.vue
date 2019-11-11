@@ -23,9 +23,19 @@ export default {
       videoElement: null
     }
   },
+  computed: {
+    selectedLangData() {
+      if (this.poemsData) {
+        return this.poemsData.find(
+          (e) => e.langs === this.selectedData.selectedLang
+        )
+      }
+      return null
+    }
+  },
   watch: {
     'selectedData.selectedVerse'() {
-      const selectedLang = this.selectedData.selectedLang
+      const selectedLang = this.selectedLangData
       const verseId = this.selectedData.selectedVerse
 
       if (verseId > -1) {
@@ -43,6 +53,7 @@ export default {
   mounted() {
     this.videoElement = document.createElement('video')
     this.videoElement.loop = true
+    this.videoElement.volume = 0
     this.videoElement.crossOrigin = 'anonymous'
     this.pixiApp = new this.$PIXI.Application({
       view: this.$refs.mycanvas,
