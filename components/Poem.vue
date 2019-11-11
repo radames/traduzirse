@@ -45,7 +45,7 @@ export default {
   data() {
     return {
       selectedLang: null,
-      selectedVerse: -1,
+      selectedVerse: 0,
       animated: true
     }
   },
