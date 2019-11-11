@@ -4,7 +4,7 @@ export default {
    ** Headers of the page
    */
   router: {
-    base: '/traduzir-se/'
+    base: '/traduzirse/'
   },
   head: {
     title: process.env.npm_package_name || '',

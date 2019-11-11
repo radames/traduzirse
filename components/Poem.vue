@@ -79,7 +79,7 @@ export default {
       if (enable && !this.t) {
         this.t = setInterval(() => {
           this.updateVerse()
-        }, 4000)
+        }, 8000)
       } else {
         clearInterval(this.t)
       }
