@@ -8,8 +8,10 @@
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "nuxt generate",
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore ."
+    "generate": "nuxt generate && rm -rf _site/* && cp -R dist/ _site/",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "gh-pages": "npm run generate && cd _site && git add . && git commit --amend --no-edit && git push  origin gh-pages --force"
+
   },
   "dependencies": {
     "d3-dsv": "^1.1.1",

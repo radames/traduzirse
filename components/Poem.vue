@@ -1,19 +1,21 @@
 <template>
   <div class="">
-    <h2>
-      Language
-    </h2>
-
-    <select ref="langPicker" v-model="selectedLang" @input="updateSelection()">
-      <option disabled value="">Select a Language</option>
-      <option
-        :key="`${poem.langs}-option`"
-        v-for="poem in poemsData"
-        :value="poem"
+    <div class="menu">
+      <select
+        ref="langPicker"
+        v-model="selectedLang"
+        @input="updateSelection()"
       >
-        {{ poem.langs }}
-      </option>
-    </select>
+        <option disabled value="">Select a Language</option>
+        <option
+          :key="`${poem.langs}-option`"
+          v-for="poem in poemsData"
+          :value="poem"
+        >
+          {{ poem.langs }}
+        </option>
+      </select>
+    </div>
     <div class="poem">
       <h1>
         {{ poemTitle }}
@@ -30,15 +32,16 @@ export default {
     poemsData: {
       type: Array,
       required: true
+    },
+    value: {
+      type: Object,
+      required: true
     }
-    // value: {
-    //   type: Object,
-    //   required: true
-    // }
   },
   data() {
     return {
-      selectedLang: null
+      selectedLang: null,
+      selectedVerse: -1
     }
   },
   computed: {
@@ -61,15 +64,23 @@ export default {
   },
   methods: {
     verseClick(index) {
-      console.log(index)
+      this.selectedVerse = index
+      this.updateSelection()
     },
     updateSelection() {
-      this.$emit('input', this.selectedLang)
+      this.$emit('input', {
+        selectedLang: this.selectedLang,
+        selectedVerse: this.selectedVerse
+      })
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+.menu {
+  display: flex;
+  justify-content: center;
+}
 .poem {
   display: flex;
   justify-content: center;
