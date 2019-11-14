@@ -52,15 +52,19 @@ export default {
     'selectedData.selectedVerse'() {
       if (this.selectedVerseId > -1) {
         const videos = this.selectedLangData.verses[this.selectedVerseId].videos
+        this.videosEl[0].pause()
 
         this.videosEl[0].src = videos[~~(Math.random() * videos.length)].urlLang
         this.videosEl[0].play()
         for (let i = 0; i < 2; i++) {
           const versesLayers = this.unselectedLangData[i].verses
           const videosLayers = versesLayers[this.selectedVerseId].videos
-          this.videosEl[i + 1].src =
-            videosLayers[~~(Math.random() * videosLayers.length)].urlLang
-          this.videosEl[i + 1].play()
+          if (videosLayers.length) {
+            this.videosEl[i + 1].pause()
+            const randomVideo = ~~(Math.random() * videosLayers.length)
+            this.videosEl[i + 1].src = videosLayers[randomVideo].urlLang
+            this.videosEl[i + 1].play()
+          }
         }
       }
     }
@@ -74,9 +78,11 @@ export default {
     })
     this.pixiApp.view.style.width = '100%'
     this.pixiApp.view.style.height = 'auto'
+
     for (let i = 0; i < 3; i++) {
       const videoEl = document.createElement('video')
       videoEl.loop = true
+      videoEl.preload = false
       videoEl.volume = 1
       videoEl.crossOrigin = 'anonymous'
       videoEl.src =
@@ -85,8 +91,10 @@ export default {
       const sprite = new this.$PIXI.Sprite(texture)
       sprite.height = this.pixiApp.screen.height
       sprite.width = this.pixiApp.screen.width
+      if (i === 0) sprite.blendMode = this.$PIXI.BLEND_MODES.ADD
+      if (i === 1) sprite.blendMode = this.$PIXI.BLEND_MODES.MULTIPLY
+      if (i === 2) sprite.blendMode = this.$PIXI.BLEND_MODES.ADD
 
-      if (i > 0) sprite.blendMode = this.$PIXI.BLEND_MODES.MULTIPLY
       this.sprites.push(sprite)
       this.videosEl.push(videoEl)
       this.textures.push(texture)
