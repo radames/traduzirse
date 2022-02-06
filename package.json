@@ -6,8 +6,8 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
-    "build": "nuxt build --modern=server",
     "start": "nuxt start --modern=server",
+    "build": "nuxt generate",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "gh-pages": "npm run generate && cd _site && git add . && git commit --amend --no-edit && git push  origin gh-pages --force"
